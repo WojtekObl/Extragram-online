@@ -23,8 +23,26 @@
   border-bottom: 1px solid lightgrey;
   margin-bottom: 25px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.app__header a {
+  color: rgba(54, 54, 54, 0.3);
+  display: block;
+  text-align: right;
+  font-size: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  max-width: 810px;
+  width: 100%;
+  padding-right: 10px;
+  transition: color 0.3s;
+}
+
+.app__header a:hover {
+  color: rgba(54, 54, 54, 1);
 }
 
 .app_header__container {
@@ -67,6 +85,10 @@
   border: 1px solid lightgray;
 }
 
+.app__loginContainer {
+  text-align: center;
+}
+
 .app__posts {
   display: flex;
   justify-content: space-between;
@@ -74,6 +96,22 @@
   width: 100%;
   /* margin: 0px 20px; */
   /* align-items: center; */
+}
+
+.posts__hashtag {
+  box-sizing: border-box;
+  font-size: 18px;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  padding: 25px;
+  max-width: 515px;
+  width: 100%;
+  transition: all .3s;
+
+}
+.posts__hashtag p {
+  padding-right: 5px;
 }
 
 

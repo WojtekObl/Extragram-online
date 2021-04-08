@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import './Post.css';
 import Avatar from '@material-ui/core/Avatar';
 import { db } from './firebase';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import { ReactTagify } from "react-tagify";
+import GlobalState from "./GlobalState"
+
 
 
 function Post({ postId, user, imageUrl, userName, caption }) {
     const [comments, setComments] = useState([]);
     const [comment, setComment] = useState('');
+
+    const [tag, setTag] = useContext(GlobalState);
+
 
     useEffect(() => {
         let unsubscribe;
@@ -52,6 +58,7 @@ function Post({ postId, user, imageUrl, userName, caption }) {
 
     return (
         <div className="post">
+
             <div className="post__header">
                 <Avatar
                     className="post__avatar"
@@ -63,7 +70,17 @@ function Post({ postId, user, imageUrl, userName, caption }) {
             </div>
 
             <img className="post__image" src={imageUrl} alt="" />
-            <h4 className="post__text"><strong>{userName}</strong> {caption}</h4>
+
+            <h4 className="post__text"><strong>{userName} </strong>
+                <ReactTagify
+                    colors={"red"}
+                    tagClicked={(tag) => {
+                        document.documentElement.scrollTo({ top: 0, behavior: "smooth" });
+                        setTag(tag);
+                    }}>
+                    {caption}
+                </ReactTagify></h4>
+
 
             <div className="post__comments">
                 {comments.map((comment) => (

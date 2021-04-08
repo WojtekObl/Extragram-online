@@ -1,7 +1,7 @@
 import { Button } from '@material-ui/core';
 import React, { useState } from 'react';
 import { storage, db } from "./firebase";
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import './ImageUpload.css';
 import Avatar from '@material-ui/core/Avatar';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -33,7 +33,7 @@ function CircularProgressWithLabel(props) {
 
 
 
-function ImageUpload({ username }) {
+function ImageUpload({ user }) {
     const [caption, setCaption] = useState("");
     const [image, setImage] = useState(null);
     const [progress, setProgress] = useState(0);
@@ -75,7 +75,8 @@ function ImageUpload({ username }) {
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                             caption: caption,
                             imageUrl: url,
-                            userName: username,
+                            userName: user.displayName,
+                            hashtags: caption.match(/(#+[a-zA-Z0-9(_)]{1,})/g),
                         });
 
                         setProgress(0);
@@ -95,10 +96,10 @@ function ImageUpload({ username }) {
             <div className="imageUpload__header">
                 <Avatar
                     className="post__avatar"
-                    alt={username}
+                    alt={user.displayName}
                     src="mjm"
                 />
-                <h3>{username}</h3>
+                <h3>{user.displayName}</h3>
             </div>
             {/* {showprogress &&
             <CircularProgressWithLabel value={progress} /> } */}

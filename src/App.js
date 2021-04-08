@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './App.css';
 import Post from "./Post";
 import { auth, db } from "./firebase";
@@ -6,7 +6,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import { Button, TextField } from '@material-ui/core';
 import ImageUpload from './ImageUpload';
-// import InstagramEmbed from 'react-instagram-embed';
+import GlobalState from "./GlobalState"
+
+
 
 
 
@@ -20,6 +22,7 @@ function getModalStyle() {
     transform: `translate(-${top}%, -${left}%)`,
   };
 }
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: 'absolute',
@@ -30,6 +33,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
   },
 }));
+
+
 
 
 function App() {
@@ -44,13 +49,23 @@ function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [signInError, setSignInError] = useState(false);
 
-  
+  //singup/in errors handle
   const [mailError, setMailError] = useState(false);
   const [mailErrorText, setMailErrorText] = useState("");
   const [passwordError, setPasswordError] = useState(false);
   const [passwordErrorText, setPasswordErrorText] = useState("");
+  const [signInError, setSignInError] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("")
+  const [touched, setTouched] = useState(false);
+
+  const handleTouch = () => {
+    setTouched(true);
+  };
+
+  //Global active TAG
+  const [tag, setTag] = useState("")
 
   // UseEffect -> runs a piece of code based on specific condition
   //ten fragment kodu uruchamia  po odświeżniu strony listener moniutorujacy zmiany w bazie danych, przy kazdej zmianie  tworzy snapshot bazy i uruchami kod aktulizujacy App state do stanu ze snapshota
@@ -62,6 +77,15 @@ function App() {
       })));
     })
   }, []);
+
+  useEffect(() => {
+    if (password !== confirmPassword && touched) {
+      setConfirmPasswordError("password doesn't match")
+    } else setConfirmPasswordError("")
+
+
+  }, [password, confirmPassword, touched]);
+
 
   //listener na zmiane w bazie autoryzacji
   useEffect(() => {
@@ -107,25 +131,25 @@ function App() {
         }).then(setOpen(false));
       })
       .catch((error) => {
-        switch(error.code) {
+        switch (error.code) {
           case "auth/invalid-email":
             setMailError(true)
             setMailErrorText(error.message)
-          break;
+            break;
           case "auth/email-already-in-use":
             setMailError(true)
             setMailErrorText(error.message)
-          break;
+            break;
           case "auth/weak-password":
             setPasswordError(true)
             setPasswordErrorText(error.message)
-          break;
+            break;
           default:
             alert(error.message);
         }
         // console.log(error);
         // alert(error.message)
-        })
+      })
 
   }
 
@@ -172,6 +196,7 @@ function App() {
             <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText> */}
             <TextField
               error={mailError}
+              // error={touched && Boolean(errorMessage.length)}
               helperText={mailErrorText}
               type="email"
               label="email"
@@ -188,15 +213,19 @@ function App() {
               onChange={(e) => setPassword(e.target.value)}
               margin="dense"
             />
-            {/* <TextField
+            <TextField
+              error={touched && Boolean(confirmPasswordError.length)}
+              helperText={confirmPasswordError}
               type="password"
               label="confirm password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onFocus={handleTouch}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               margin="dense"
-            /> */}
+            />
 
-            <Button type="submit" disabled={!email || !password || !username} onClick={signUp}>Sign Up</Button>
+
+            <Button type="submit" disabled={!email || !password || !username || !confirmPassword} onClick={signUp}>Sign Up</Button>
           </form>
 
 
@@ -252,6 +281,7 @@ function App() {
         <div className="app_header__container">
           <img src="https://i.gyazo.com/cc9abb71a63bddde73cf3b4fb96e847c.png" alt="Extragram logo" className="app__headerImage" />
           {/* display diferent button depend on user log in or not */}
+
           {user ? (
             <Button onClick={() => auth.signOut()}>Log out</Button>
           ) :
@@ -262,31 +292,51 @@ function App() {
               </div>
             )}
         </div>
+        <a href="https://github.com/WojtekObl/Extragram-online" target="blank">visit github repository</a>
       </div>
 
       <div className="app__posts">
-        <div className="post__left">
-          {
-            posts.map(({ id, post }) => (
-              <Post
-                key={id}
-                postId={id}
-                user={user}
-                userName={post.userName}
-                caption={post.caption}
-                imageUrl={post.imageUrl}
-              />
-            ))
-          }
-        </div>
+
+        <GlobalState.Provider value={[tag, setTag]}>
+            <div className="post__left">
+            {tag &&
+              <div className="posts__hashtag">
+                <p>You are watching <strong>{tag}</strong></p>
+                <Button onClick={() => setTag(null)}>Cancel</Button>
+              </div>
+            }
+            {
+              posts
+              .filter(({ post }) => {
+                if(tag) {
+                  console.log(tag)
+                  return post.hashtags.includes(tag)
+                } else return true
+               
+              })
+              .map(({ id, post }) => (
+                <Post
+                  key={id}
+                  postId={id}
+                  user={user}
+                  userName={post.userName}
+                  caption={post.caption}
+                  imageUrl={post.imageUrl}
+                />
+              ))
+              
+            }
+          </div>
+        </GlobalState.Provider>
         <div className="post__right">
 
           {user ? (
-            <ImageUpload username={user.displayName} />)
+            <ImageUpload user={user} />)
             :
             (
               <h3 className="login__info">Sorry you need sign in to upload...</h3>
             )}
+
         </div>
       </div>
 
