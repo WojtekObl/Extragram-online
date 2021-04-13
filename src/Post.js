@@ -5,6 +5,7 @@ import { db } from './firebase';
 import firebase from 'firebase/app';
 import { ReactTagify } from "react-tagify";
 import GlobalState from "./GlobalState"
+import { Button } from '@material-ui/core';
 
 
 
@@ -57,6 +58,7 @@ function Post({ postId, user, imageUrl, userName, caption }) {
     };
 
     return (
+
         <div className="post">
 
             <div className="post__header">
@@ -66,7 +68,6 @@ function Post({ postId, user, imageUrl, userName, caption }) {
                     src="mjm"
                 />
                 <h3>{userName}</h3>
-
             </div>
 
             <img className="post__image" src={imageUrl} alt="" />
@@ -79,7 +80,15 @@ function Post({ postId, user, imageUrl, userName, caption }) {
                         setTag(tag);
                     }}>
                     {caption}
-                </ReactTagify></h4>
+                </ReactTagify>
+                {(userName == user?.displayName) &&
+                    (<div>
+                        <button>Delete</button>
+                        <button>Edit</button>
+                    </div>)
+                }
+            </h4>
+
 
 
             <div className="post__comments">
