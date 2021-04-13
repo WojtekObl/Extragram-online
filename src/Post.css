@@ -48,10 +48,39 @@
     border-top: 1px solid lightgrey;
     background-color: transparent;
     padding: 0px 15px;
+    cursor: pointer;
+}
+
+.post__control {
+    display: inline-block;
+    margin-left: 5px;
+
+}
+
+.post__controlButton {
+    display: inline-block;
+    border: none;
+    color: #6082a3;
+    background-color: transparent;
+    padding-right: 5px;
+    cursor: pointer;
 }
 
 .post__comments {
     padding: 0 20px;
     margin-bottom: 20px;
     /* line-height: 1.6; */
+
+}
+
+:focus {
+    outline: none;
+}
+
+Button {
+    color: black;
+}
+
+.MuiFormControl-root {
+    padding: 20px;
 }

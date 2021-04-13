@@ -71,12 +71,16 @@ function ImageUpload({ user }) {
                     .getDownloadURL()
                     .then(url => {
                         //post image inside db
+                        let hashtags = []
+                        if(caption.match(/(#+[a-zA-Z0-9(_)]{1,})/g)) {
+                            hashtags = caption.match(/(#+[a-zA-Z0-9(_)]{1,})/g)
+                        } 
                         db.collection("posts").add({
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                             caption: caption,
                             imageUrl: url,
                             userName: user.displayName,
-                            hashtags: caption.match(/(#+[a-zA-Z0-9(_)]{1,})/g),
+                            hashtags: hashtags,
                         });
 
                         setProgress(0);

@@ -5,16 +5,66 @@ import { db } from './firebase';
 import firebase from 'firebase/app';
 import { ReactTagify } from "react-tagify";
 import GlobalState from "./GlobalState"
-import { Button } from '@material-ui/core';
+import { Button, Modal, TextField } from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { makeStyles } from '@material-ui/core/styles';
 
+function getModalStyle() {
+    const top = 50;
+    const left = 50;
+
+    return {
+        top: `${top}%`,
+        left: `${left}%`,
+        transform: `translate(-${top}%, -${left}%)`,
+    };
+}
+
+const useStyles = makeStyles((theme) => ({
+    paper: {
+        position: 'absolute',
+        width: 400,
+        backgroundColor: theme.palette.background.paper,
+        border: '1px solid #000',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+    },
+    root: {
+        '& .MuiTextField-root': {
+            margin: theme.spacing(1),
+            width: '25ch',
+            padding: "20px",
+        },
+    }
+    }));
 
 
 function Post({ postId, user, imageUrl, userName, caption }) {
+
+    const classes = useStyles()
+    const [modalStyle] = useState(getModalStyle);
+
     const [comments, setComments] = useState([]);
     const [comment, setComment] = useState('');
+    const [openDelete, setOpenDelete] = useState(false);
+    const [openEdit, setOpenEdit] = useState(false);
 
     const [tag, setTag] = useContext(GlobalState);
 
+
+
+
+    const handleOpenDelete = () => {
+        setOpenDelete(true);
+    };
+
+    const handleCloseDelete = () => {
+        setOpenDelete(false);
+    };
 
     useEffect(() => {
         let unsubscribe;
@@ -57,9 +107,76 @@ function Post({ postId, user, imageUrl, userName, caption }) {
 
     };
 
+    const handleDelete = (post) => {
+        db
+            .collection("posts")
+            .doc(postId)
+            .delete()
+            .then(() => {
+                console.log("Document successfully deleted!");
+            }).catch((error) => {
+                console.error("Error removing document: ", error);
+            });
+    }
+
     return (
 
         <div className="post">
+            <Dialog
+                open={openDelete}
+                onClose={handleCloseDelete}
+                aria-labelledby="Delete post"
+                aria-describedby="Decide if you want to delete chosen post"
+            >
+                <DialogTitle id="alert-dialog-title">{"Delete the post"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to delete this post?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDelete} color="secondary">
+                        No
+                    </Button>
+                    <Button onClick={handleDelete} color="black" autoFocus>
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Modal
+                open={openEdit}
+                onClose={() => setOpenEdit(false)}
+            >
+                <div style={modalStyle} className={classes.paper}>
+                    <div className="post">
+                        <div className="post__header">
+                            <Avatar
+                                className="post__avatar"
+                                alt={userName}
+                                src="mjm"
+                            />
+                            <h3>{userName}</h3>
+                        </div>
+
+                        <img className="post__image" src={imageUrl} alt="" />
+                        {/* <h4 className="edit__username">{userName}:</h4> */}
+                        {/* <textarea className="edit__caption" cols="30" rows="10" defaultValue={caption}></textarea> */}
+                        <TextField
+                            id="outlined-multiline-static"
+                            className="edit__caption"
+                            label="Caption"
+                            multiline
+                            defaultValue={caption}
+                            variant="outlined"
+                        />
+                    </div>
+                        <div className="edit__buttons">
+                            <Button>Aplly</Button>
+                            <Button onClick={() => setOpenEdit(false)} color="secondary">Cancel</Button>
+                        </div>
+                </div>
+            </Modal>
 
             <div className="post__header">
                 <Avatar
@@ -81,14 +198,14 @@ function Post({ postId, user, imageUrl, userName, caption }) {
                     }}>
                     {caption}
                 </ReactTagify>
+
                 {(userName == user?.displayName) &&
-                    (<div>
-                        <button>Delete</button>
-                        <button>Edit</button>
+                    (<div className="post__control">
+                        <button className="post__controlButton" onClick={() => setOpenEdit(true)}>Edit</button>
+                        <button className="post__controlButton" onClick={handleOpenDelete}>Delete</button>
                     </div>)
                 }
             </h4>
-
 
 
             <div className="post__comments">
