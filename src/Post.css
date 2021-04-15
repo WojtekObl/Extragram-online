@@ -82,5 +82,16 @@ Button {
 }
 
 .MuiFormControl-root {
-    padding: 20px;
+    width: 500px;
+    max-width: 96%;
+    padding: 10px;
+    
+}
+
+.edit__buttons {
+    display: flex;
+    justify-content: center;
+}
+.edit_modal {
+    margin-bottom: 20px;
 }

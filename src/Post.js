@@ -27,17 +27,24 @@ function getModalStyle() {
 const useStyles = makeStyles((theme) => ({
     paper: {
         position: 'absolute',
-        width: 400,
+        width: 515,
+        maxWidth: "100%",
         backgroundColor: theme.palette.background.paper,
-        border: '1px solid #000',
+        border: '1px solid lightgrey',
         boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
+        padding: theme.spacing(0, 0, 3),
     },
     root: {
         '& .MuiTextField-root': {
-            margin: theme.spacing(1),
+            // margin: theme.spacing(1),
             width: '25ch',
             padding: "20px",
+            width: '100%',
+            
+        },
+        '.MuiFormControl-root': {
+            margin: '30px',
+
         },
     }
     }));
@@ -52,6 +59,7 @@ function Post({ postId, user, imageUrl, userName, caption }) {
     const [comment, setComment] = useState('');
     const [openDelete, setOpenDelete] = useState(false);
     const [openEdit, setOpenEdit] = useState(false);
+    const [newCaption, setNewCaption] = useState("")
 
     const [tag, setTag] = useContext(GlobalState);
 
@@ -107,7 +115,7 @@ function Post({ postId, user, imageUrl, userName, caption }) {
 
     };
 
-    const handleDelete = (post) => {
+    const handleDelete = () => {
         db
             .collection("posts")
             .doc(postId)
@@ -117,6 +125,23 @@ function Post({ postId, user, imageUrl, userName, caption }) {
             }).catch((error) => {
                 console.error("Error removing document: ", error);
             });
+    }
+
+    const handleEdit = () => {
+        db
+            .collection("posts")
+            .doc(postId)
+            .update(
+                {caption: newCaption}
+            )
+            .then(()=>{
+                setOpenEdit(false)
+            })
+            .catch((error) => {
+                // The document probably doesn't exist.
+                console.error("Error updating document: ", error);
+            });
+            
     }
 
     return (
@@ -149,7 +174,7 @@ function Post({ postId, user, imageUrl, userName, caption }) {
                 onClose={() => setOpenEdit(false)}
             >
                 <div style={modalStyle} className={classes.paper}>
-                    <div className="post">
+                    <div className="post edit_modal">
                         <div className="post__header">
                             <Avatar
                                 className="post__avatar"
@@ -162,17 +187,21 @@ function Post({ postId, user, imageUrl, userName, caption }) {
                         <img className="post__image" src={imageUrl} alt="" />
                         {/* <h4 className="edit__username">{userName}:</h4> */}
                         {/* <textarea className="edit__caption" cols="30" rows="10" defaultValue={caption}></textarea> */}
+                        
                         <TextField
                             id="outlined-multiline-static"
                             className="edit__caption"
                             label="Caption"
                             multiline
                             defaultValue={caption}
+                            onChange= {(e) => setNewCaption(e.target.value)}
                             variant="outlined"
+                            style={{margin: "10px"}}
                         />
+                        
                     </div>
                         <div className="edit__buttons">
-                            <Button>Aplly</Button>
+                            <Button onClick={handleEdit}>Aplly</Button>
                             <Button onClick={() => setOpenEdit(false)} color="secondary">Cancel</Button>
                         </div>
                 </div>
