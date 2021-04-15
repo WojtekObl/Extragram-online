@@ -3,10 +3,10 @@
 
 Aplikacja posiadająca część funkcjonalności Instagrama:
  
- -autoryzacja, 
- -dodawanie, edycja, usuwanie postow,
- -dodwanie komentarzy,
- -obsługa hashtagów.
+ - autoryzacja, 
+ - dodawanie, edycja, usuwanie postow,
+ - dodwanie komentarzy,
+ - obsługa hashtagów.
  
 W aplikacji wykorzystuje:
 - usługi Firebase: auth, database, storage, 
