@@ -1,5 +1,6 @@
 # Extragram
 
+
 Aplikacja posiadająca część funkcjonalności Instagrama:
  -autoryzacja, 
  -dodawanie, edycja, usuwanie postow,
