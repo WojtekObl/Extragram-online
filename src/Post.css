@@ -1,97 +1,92 @@
 .post {
-    background-color: #fff;
-    border: 1px solid lightgrey;
-    max-width: 515px;
-    margin-bottom: 45px;
+  background-color: #fff;
+  border: 1px solid lightgrey;
+  max-width: 515px;
+  margin-bottom: 45px;
 }
 
 .post__image {
-    width: 100%;
-    object-fit: contain;
-    border-top: 1px solid lightgrey;
-    border-bottom: 1px solid lightgrey;
+  width: 100%;
+  object-fit: contain;
+  border-top: 1px solid lightgrey;
+  border-bottom: 1px solid lightgrey;
 }
 
 .post__text {
-    font-weight: normal;
-    padding: 20px;
+  font-weight: normal;
+  padding: 20px;
 }
 
 .post__header {
-    display: flex;
-    align-items: center;
-    padding: 20px;
+  display: flex;
+  align-items: center;
+  padding: 20px;
 }
 
 .post__avatar {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .post__commentBox {
-    display: flex;
-    margin-top: 20px;
-
+  display: flex;
+  margin-top: 20px;
 }
 
 .post__input {
-    flex: 1;
-    border: none;
-    padding: 15px;
-    border-top: 1px solid lightgrey;
-
+  flex: 1;
+  border: none;
+  padding: 15px;
+  border-top: 1px solid lightgrey;
 }
 
 .post__button {
-    flex: 0;
-    border: none;
-    color: #6082a3;
-    border-top: 1px solid lightgrey;
-    background-color: transparent;
-    padding: 0px 15px;
-    cursor: pointer;
+  flex: 0;
+  border: none;
+  color: #6082a3;
+  border-top: 1px solid lightgrey;
+  background-color: transparent;
+  padding: 0px 15px;
+  cursor: pointer;
 }
 
 .post__control {
-    display: inline-block;
-    margin-left: 5px;
-
+  display: inline-block;
+  margin-left: 5px;
 }
 
 .post__controlButton {
-    display: inline-block;
-    border: none;
-    color: #6082a3;
-    background-color: transparent;
-    padding-right: 5px;
-    cursor: pointer;
+  display: inline-block;
+  border: none;
+  color: #6082a3;
+  background-color: transparent;
+  padding-right: 5px;
+  cursor: pointer;
 }
 
 .post__comments {
-    padding: 0 20px;
-    margin-bottom: 20px;
-    /* line-height: 1.6; */
-
+  padding: 0 20px;
+  margin-bottom: 20px;
+  /* line-height: 1.6; */
 }
 
 :focus {
-    outline: none;
+  outline: none;
 }
 
 Button {
-    color: black;
+  color: black;
 }
 
 .MuiFormControl-root {
-    width: 500px;
-    max-width: 96%;
-    padding: 10px;
-    
+  width: 500px;
+  max-width: 96%;
+  padding: 10px;
 }
 
 .edit__buttons {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 .edit_modal {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }

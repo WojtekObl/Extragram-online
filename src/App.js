@@ -1,16 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react';
-import './App.css';
+import React, { useState, useEffect, useContext } from "react";
+import "./App.css";
 import Post from "./Post";
 import { auth, db } from "./firebase";
-import { makeStyles } from '@material-ui/core/styles';
-import Modal from '@material-ui/core/Modal';
-import { Button, TextField } from '@material-ui/core';
-import ImageUpload from './ImageUpload';
-import GlobalState from "./GlobalState"
-
-
-
-
+import { makeStyles } from "@material-ui/core/styles";
+import Modal from "@material-ui/core/Modal";
+import { Button, TextField } from "@material-ui/core";
+import ImageUpload from "./ImageUpload";
+import GlobalState from "./GlobalState";
 
 function getModalStyle() {
   const top = 50;
@@ -25,21 +21,17 @@ function getModalStyle() {
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    position: 'absolute',
+    position: "absolute",
     width: 400,
     backgroundColor: theme.palette.background.paper,
-    border: '1px solid #000',
+    border: "1px solid #000",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
 }));
 
-
-
-
 function App() {
-
-  const classes = useStyles()
+  const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
 
   const [posts, setPosts] = useState([]);
@@ -57,7 +49,7 @@ function App() {
   const [passwordErrorText, setPasswordErrorText] = useState("");
   const [signInError, setSignInError] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("")
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [touched, setTouched] = useState(false);
 
   const handleTouch = () => {
@@ -65,27 +57,28 @@ function App() {
   };
 
   //Global active TAG
-  const [tag, setTag] = useState("")
+  const [tag, setTag] = useState("");
 
   // UseEffect -> runs a piece of code based on specific condition
   //ten fragment kodu uruchamia  po odświeżniu strony listener moniutorujacy zmiany w bazie danych, przy kazdej zmianie  tworzy snapshot bazy i uruchami kod aktulizujacy App state do stanu ze snapshota
   useEffect(() => {
-    db.collection('posts').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
-      setPosts(snapshot.docs.map(doc => ({
-        id: doc.id,
-        post: doc.data()
-      })));
-    })
+    db.collection("posts")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) => {
+        setPosts(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            post: doc.data(),
+          }))
+        );
+      });
   }, []);
 
   useEffect(() => {
     if (password !== confirmPassword && touched) {
-      setConfirmPasswordError("password doesn't match")
-    } else setConfirmPasswordError("")
-
-
+      setConfirmPasswordError("password doesn't match");
+    } else setConfirmPasswordError("");
   }, [password, confirmPassword, touched]);
-
 
   //listener na zmiane w bazie autoryzacji
   useEffect(() => {
@@ -100,88 +93,84 @@ function App() {
           //if profile was created
           return authUser.updateProfile({
             displayName: username,
-          })
+          });
         }
       } else {
         // user has logged out
         setUser(null);
       }
-    })
+    });
 
     return () => {
       //perform cleanup of listeners
       unsubscribe();
-    }
-
-  }, [user, username])
+    };
+  }, [user, username]);
 
   const signUp = (event) => {
     event.preventDefault();
-    setMailError(false)
-    setMailErrorText("")
-    setPasswordError(false)
-    setPasswordErrorText("")
+    setMailError(false);
+    setMailErrorText("");
+    setPasswordError(false);
+    setPasswordErrorText("");
 
     //autoryzacja użytkownia za pomocą firebase
     auth
       .createUserWithEmailAndPassword(email, password)
       .then((authUser) => {
-        return authUser.user.updateProfile({
-          displayName: username,
-        }).then(setOpen(false));
+        return authUser.user
+          .updateProfile({
+            displayName: username,
+          })
+          .then(setOpen(false));
       })
       .catch((error) => {
         switch (error.code) {
           case "auth/invalid-email":
-            setMailError(true)
-            setMailErrorText(error.message)
+            setMailError(true);
+            setMailErrorText(error.message);
             break;
           case "auth/email-already-in-use":
-            setMailError(true)
-            setMailErrorText(error.message)
+            setMailError(true);
+            setMailErrorText(error.message);
             break;
           case "auth/weak-password":
-            setPasswordError(true)
-            setPasswordErrorText(error.message)
+            setPasswordError(true);
+            setPasswordErrorText(error.message);
             break;
           default:
             alert(error.message);
         }
         // console.log(error);
         // alert(error.message)
-      })
-
-  }
-
+      });
+  };
 
   const signIn = (event) => {
     event.preventDefault();
-    setSignInError(false)
+    setSignInError(false);
 
     auth
       .signInWithEmailAndPassword(email, password)
       .then(() => setOpenSignIn(false))
       .catch((error) => {
         // alert(error.message)
-        setSignInError(true)
-      })
+        setSignInError(true);
+      });
     // tutaj musze dodac przypisanie tresci errorra do spana na dole passworda
-
-  }
-
+  };
 
   return (
     <div className="app">
-
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        className="modal"
-      >
+      <Modal open={open} onClose={() => setOpen(false)} className="modal">
         <div style={modalStyle} className={classes.paper}>
           <form action="" className="app__signup">
             <center>
-              <img src="https://i.gyazo.com/cc9abb71a63bddde73cf3b4fb96e847c.png" alt="Extragram logo" className="app__headerImage" />
+              <img
+                src="https://i.gyazo.com/cc9abb71a63bddde73cf3b4fb96e847c.png"
+                alt="Extragram logo"
+                className="app__headerImage"
+              />
             </center>
 
             <TextField
@@ -224,14 +213,16 @@ function App() {
               margin="dense"
             />
 
-
-            <Button type="submit" disabled={!email || !password || !username || !confirmPassword} onClick={signUp}>Sign Up</Button>
+            <Button
+              type="submit"
+              disabled={!email || !password || !username || !confirmPassword}
+              onClick={signUp}
+            >
+              Sign Up
+            </Button>
           </form>
-
-
         </div>
       </Modal>
-
 
       {/* login modal */}
       {/* zmien te modale na komponent */}
@@ -243,15 +234,19 @@ function App() {
         <div style={modalStyle} className={classes.paper}>
           <form action="" className="app__signup">
             <center>
-              <img src="https://i.gyazo.com/cc9abb71a63bddde73cf3b4fb96e847c.png" alt="Extragram logo" className="app__headerImage" />
+              <img
+                src="https://i.gyazo.com/cc9abb71a63bddde73cf3b4fb96e847c.png"
+                alt="Extragram logo"
+                className="app__headerImage"
+              />
             </center>
             <TextField
               type="email"
               label="email"
               value={email}
               onChange={(e) => {
-                setEmail(e.target.value)
-                setSignInError(false)
+                setEmail(e.target.value);
+                setSignInError(false);
               }}
               margin="dense"
             />
@@ -260,60 +255,67 @@ function App() {
               label="password"
               value={password}
               onChange={(e) => {
-                setPassword(e.target.value)
-                setSignInError(false)
+                setPassword(e.target.value);
+                setSignInError(false);
               }}
               margin="dense"
             />
-            {signInError && (<span className="signIn__error">email or password is incorrect </span>)}
-            <Button disabled={!email || !password} type="submit" onClick={signIn}>Sign In</Button>
+            {signInError && (
+              <span className="signIn__error">
+                email or password is incorrect{" "}
+              </span>
+            )}
+            <Button
+              disabled={!email || !password}
+              type="submit"
+              onClick={signIn}
+            >
+              Sign In
+            </Button>
           </form>
-
-
         </div>
       </Modal>
 
-
-
-
-
-
       <div className="app__header">
         <div className="app_header__container">
-          <img src="https://i.gyazo.com/cc9abb71a63bddde73cf3b4fb96e847c.png" alt="Extragram logo" className="app__headerImage" />
+          <img
+            src="https://i.gyazo.com/cc9abb71a63bddde73cf3b4fb96e847c.png"
+            alt="Extragram logo"
+            className="app__headerImage"
+          />
           {/* display diferent button depend on user log in or not */}
 
           {user ? (
             <Button onClick={() => auth.signOut()}>Log out</Button>
-          ) :
-            (
-              <div className="app__loginContainer">
-                <Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
-                <Button onClick={() => setOpen(true)}>Sign Up</Button>
-              </div>
-            )}
+          ) : (
+            <div className="app__loginContainer">
+              <Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
+              <Button onClick={() => setOpen(true)}>Sign Up</Button>
+            </div>
+          )}
         </div>
-        <a href="https://github.com/WojtekObl/Extragram-online" target="blank">visit github repository</a>
+        <a href="https://github.com/WojtekObl/Extragram-online" target="blank">
+          visit github repository
+        </a>
       </div>
 
       <div className="app__posts">
-
         <GlobalState.Provider value={[tag, setTag]}>
-            <div className="post__left">
-            {tag &&
+          <div className="post__left">
+            {tag && (
               <div className="posts__hashtag">
-                <p>You are watching <strong>{tag}</strong></p>
+                <p>
+                  You are watching <strong>{tag}</strong>
+                </p>
                 <Button onClick={() => setTag(null)}>Cancel</Button>
               </div>
-            }
-            {
-              posts
+            )}
+            {posts
               .filter(({ post }) => {
-                if(tag) {
-                  console.log(tag)
-                  return post.hashtags.includes(tag)
-                } else return true
-               
+                if (tag) {
+                  console.log(tag);
+                  return post.hashtags.includes(tag);
+                } else return true;
               })
               .map(({ id, post }) => (
                 <Post
@@ -324,20 +326,15 @@ function App() {
                   caption={post.caption}
                   imageUrl={post.imageUrl}
                 />
-              ))
-              
-            }
+              ))}
           </div>
         </GlobalState.Provider>
         <div className="post__right">
-
           {user ? (
-            <ImageUpload user={user} />)
-            :
-            (
-              <h3 className="login__info">Sorry you need sign in to upload...</h3>
-            )}
-
+            <ImageUpload user={user} />
+          ) : (
+            <h3 className="login__info">Sorry you need sign in to upload...</h3>
+          )}
         </div>
       </div>
 
@@ -352,9 +349,6 @@ function App() {
         userName="USER TWO"
         caption="DOPE"
       /> */}
-
-
-
     </div>
   );
 }
