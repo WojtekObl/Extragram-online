@@ -1,4 +1,4 @@
-# Extragram
+# PhotoShare
 
 
 Aplikacja posiadająca część funkcjonalności Instagrama:
